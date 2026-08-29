@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Segurança Digital | Projeto Extensionista</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f0f2f5; color: #333; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { background: #ffffff; max-width: 650px; width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; }
+    h1 { color: #1a365d; font-size: 1.6rem; margin-bottom: 10px; text-align: center; }
+    p.intro { color: #4a5568; font-size: 0.95rem; margin-bottom: 25px; text-align: center; }
+    .question-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .question-title { font-size: 1.1rem; font-weight: 600; color: #2d3748; margin-bottom: 15px; }
+    .options-list { list-style: none; }
+    .option-btn { width: 100%; text-align: left; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; padding: 12px 15px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; }
+    .option-btn:hover { background: #edf2f7; border-color: #a0aec0; }
+    .feedback { font-weight: bold; margin-top: 15px; padding: 10px; border-radius: 6px; display: none; }
+    .correct { background: #c6f6d5; color: #22543d; }
+    .incorrect { background: #fed7d7; color: #742a2a; }
+    .next-btn { background: #2b6cb0; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: none; margin-top: 15px; font-weight: bold; }
+    .next-btn:hover { background: #2c5282; }
+    .score-box { text-align: center; padding: 20px; display: none; }
+    .score-box h2 { color: #2b6cb0; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Quiz de Segurança Digital</h1>
+    <p class="intro">Teste seus conhecimentos para identificar e prevenir golpes virtuais no seu dia a dia.</p>
+
+    <div id="quiz-box">
+      <div class="question-box">
+        <div id="question-title" class="question-title">Carregando pergunta...</div>
+        <div id="options-list" class="options-list"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Próxima Pergunta</button>
+      </div>
+    </div>
+
+    <div id="score-box" class="score-box">
+      <h2>Parabéns! Você concluiu o Quiz.</h2>
+      <p id="score-text"></p>
+      <button onclick="restartQuiz()" class="next-btn" style="display: inline-block; margin-top: 20px;">Refazer Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "1. Você recebe uma mensagem no WhatsApp de um número desconhecido usando a foto de um parente pedindo dinheiro urgente. O que fazer?",
+        options: [
+          { text: "Fazer o PIX imediatamente para ajudar.", correct: false },
+          { text: "Ligar para o número antigo/habitual do parente para confirmar antes de enviar qualquer valor.", correct: true },
+          { text: "Enviar metade do valor por garantia.", correct: false }
+        ]
+      },
+      {
+        question: "2. Chega um e-mail com o assunto 'Sua conta bancária será bloqueada! Clique no link'. Qual a atitude correta?",
+        options: [
+          { text: "Clicar no link para regularizar a conta o mais rápido possível.", correct: false },
+          { text: "Ignorar o link, não clicar em nada e verificar o aplicativo oficial do banco.", correct: true },
+          { text: "Responder ao e-mail enviando suas senhas para suporte.", correct: false }
+        ]
+      },
+      {
+        question: "3. Qual destas é uma senha forte e recomendada para contas importantes?",
+        options: [
+          { text: "12345678 ou data de nascimento", correct: false },
+          { text: "Uma combinação de letras maiúsculas, minúsculas, números e símbolos (ex: S3gur4nc@#2026)", correct: true },
+          { text: "O seu primeiro nome repetido duas vezes", correct: false }
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[currentQuestionIndex];
+      document.getElementById('question-title').innerText = q.question;
+      const optionsContainer = document.getElementById('options-list');
+      optionsContainer.innerHTML = '';
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'none';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt.text;
+        btn.className = 'option-btn';
+        btn.onclick = () => selectOption(btn, opt.correct);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(btn, isCorrect) {
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      const feedback = document.getElementById('feedback');
+      feedback.style.display = 'block';
+
+      if (isCorrect) {
+        feedback.innerText = 'Resposta Correta! Excelente prática de segurança.';
+        feedback.className = 'feedback correct';
+        score++;
+      } else {
+        feedback.innerText = 'Resposta Incorreta! Cuidado com esse tipo de situação.';
+        feedback.className = 'feedback incorrect';
+      }
+
+      document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-box').style.display = 'none';
+      const scoreBox = document.getElementById('score-box');
+      scoreBox.style.display = 'block';
+      document.getElementById('score-text').innerText = `Você acertou ${score} de ${questions.length} perguntas!`;
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('quiz-box').style.display = 'block';
+      document.getElementById('score-box').style.display = 'none';
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
