@@ -3,141 +3,409 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz de Segurança Digital | Projeto Extensionista</title>
+  <title>Oficina de Segurança Digital | Cortana</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f0f2f5; color: #333; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .container { background: #ffffff; max-width: 650px; width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; }
-    h1 { color: #1a365d; font-size: 1.6rem; margin-bottom: 10px; text-align: center; }
-    p.intro { color: #4a5568; font-size: 0.95rem; margin-bottom: 25px; text-align: center; }
-    .question-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-    .question-title { font-size: 1.1rem; font-weight: 600; color: #2d3748; margin-bottom: 15px; }
-    .options-list { list-style: none; }
-    .option-btn { width: 100%; text-align: left; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; padding: 12px 15px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; }
-    .option-btn:hover { background: #edf2f7; border-color: #a0aec0; }
-    .feedback { font-weight: bold; margin-top: 15px; padding: 10px; border-radius: 6px; display: none; }
-    .correct { background: #c6f6d5; color: #22543d; }
-    .incorrect { background: #fed7d7; color: #742a2a; }
-    .next-btn { background: #2b6cb0; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: none; margin-top: 15px; font-weight: bold; }
-    .next-btn:hover { background: #2c5282; }
-    .score-box { text-align: center; padding: 20px; display: none; }
-    .score-box h2 { color: #2b6cb0; margin-bottom: 10px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #38bdf8;
+      width: 100%;
+      max-width: 680px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+      padding: 35px;
+      backdrop-filter: blur(10px);
+    }
+    .cortana-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .cortana-avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #0284c7 0%, #0369a1 100%);
+      border: 3px solid #38bdf8;
+      box-shadow: 0 0 20px #38bdf8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .cortana-avatar svg {
+      width: 60px;
+      height: 60px;
+      fill: none;
+      stroke: #e0f2fe;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+    }
+    .cortana-name {
+      color: #38bdf8;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+    h1 {
+      color: #f1f5f9;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      color: #94a3b8;
+      font-size: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      margin: 20px 0;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid #38bdf8;
+      background: #0f172a;
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px #38bdf8;
+    }
+    .progress-bar {
+      background: #1e293b;
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+    .progress {
+      background: #38bdf8;
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+    .question-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f8fafc;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      background: #1e293b;
+      padding: 18px;
+      border-radius: 12px;
+      border-left: 4px solid #38bdf8;
+    }
+    .option-btn {
+      width: 100%;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      color: #e2e8f0;
+    }
+    .option-btn:hover {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #fff;
+      transform: translateX(4px);
+    }
+    .feedback {
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-top: 15px;
+      display: none;
+    }
+    .feedback.correct {
+      background-color: rgba(22, 101, 52, 0.8);
+      color: #bbf7d0;
+      border: 2px solid #22c55e;
+    }
+    .feedback.incorrect {
+      background-color: rgba(153, 27, 27, 0.8);
+      color: #fecaca;
+      border: 2px solid #ef4444;
+    }
+    .btn-main {
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+      transition: transform 0.2s ease;
+    }
+    .btn-main:hover {
+      transform: scale(1.02);
+    }
+    .result-box {
+      text-align: center;
+      display: none;
+    }
+    .result-box h2 {
+      color: #38bdf8;
+      margin-bottom: 12px;
+    }
+    .result-box p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Quiz de Segurança Digital</h1>
-    <p class="intro">Teste seus conhecimentos para identificar e prevenir golpes virtuais no seu dia a dia.</p>
-
-    <div id="quiz-box">
-      <div class="question-box">
-        <div id="question-title" class="question-title">Carregando pergunta...</div>
-        <div id="options-list" class="options-list"></div>
-        <div id="feedback" class="feedback"></div>
-        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Próxima Pergunta</button>
-      </div>
+<div class="card">
+  <!-- Avatar da Cortana -->
+  <div class="cortana-box">
+    <div class="cortana-avatar" id="cortana-avatar">
+      <!-- Rosto SVG Inicial (Neutro) -->
+      <svg id="cortana-face" viewBox="0 0 24 24">
+        <circle cx="8.5" cy="9.5" r="1.5" fill="#e0f2fe" stroke="none"/>
+        <circle cx="15.5" cy="9.5" r="1.5" fill="#e0f2fe" stroke="none"/>
+        <line x1="8" y1="15" x2="16" y2="15"/>
+      </svg>
     </div>
-
-    <div id="score-box" class="score-box">
-      <h2>Parabéns! Você concluiu o Quiz.</h2>
-      <p id="score-text"></p>
-      <button onclick="restartQuiz()" class="next-btn" style="display: inline-block; margin-top: 20px;">Refazer Quiz</button>
-    </div>
+    <span class="cortana-name">Cortana • IA de Segurança</span>
   </div>
 
-  <script>
-    const questions = [
-      {
-        question: "1. Você recebe uma mensagem no WhatsApp de um número desconhecido usando a foto de um parente pedindo dinheiro urgente. O que fazer?",
-        options: [
-          { text: "Fazer o PIX imediatamente para ajudar.", correct: false },
-          { text: "Ligar para o número antigo/habitual do parente para confirmar antes de enviar qualquer valor.", correct: true },
-          { text: "Enviar metade do valor por garantia.", correct: false }
-        ]
-      },
-      {
-        question: "2. Chega um e-mail com o assunto 'Sua conta bancária será bloqueada! Clique no link'. Qual a atitude correta?",
-        options: [
-          { text: "Clicar no link para regularizar a conta o mais rápido possível.", correct: false },
-          { text: "Ignorar o link, não clicar em nada e verificar o aplicativo oficial do banco.", correct: true },
-          { text: "Responder ao e-mail enviando suas senhas para suporte.", correct: false }
-        ]
-      },
-      {
-        question: "3. Qual destas é uma senha forte e recomendada para contas importantes?",
-        options: [
-          { text: "12345678 ou data de nascimento", correct: false },
-          { text: "Uma combinação de letras maiúsculas, minúsculas, números e símbolos (ex: S3gur4nc@#2026)", correct: true },
-          { text: "O seu primeiro nome repetido duas vezes", correct: false }
-        ]
-      }
-    ];
+  <!-- Tela 1: Boas-vindas e Nome -->
+  <div id="start-screen">
+    <h1>Oficina de Segurança Digital</h1>
+    <p class="subtitle">Olá! Sou a Cortana. Vou te ajudar a reconhecer e evitar golpes virtuais no seu dia a dia.</p>
+    <div class="input-group">
+      <input type="text" id="username" placeholder="Digite seu primeiro nome ou apelido" autofocus>
+    </div>
+    <button class="btn-main" onclick="startQuiz()">Iniciar Treinamento ➔</button>
+  </div>
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+  <!-- Tela 2: Quiz -->
+  <div id="quiz-container" style="display: none;">
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="question-title" id="question">Carregando...</div>
+    <div id="options"></div>
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="btn-main" style="display: none;" onclick="nextQuestion()">Próxima Pergunta ➔</button>
+  </div>
 
-    function loadQuestion() {
-      const q = questions[currentQuestionIndex];
-      document.getElementById('question-title').innerText = q.question;
-      const optionsContainer = document.getElementById('options-list');
-      optionsContainer.innerHTML = '';
-      document.getElementById('feedback').style.display = 'none';
-      document.getElementById('next-btn').style.display = 'none';
+  <!-- Tela 3: Resultado -->
+  <div id="result-box" class="result-box">
+    <h2>Treinamento Concluído!</h2>
+    <p id="score-text"></p>
+    <button class="btn-main" onclick="restartQuiz()">🔄 Refazer Treinamento</button>
+  </div>
+</div>
 
-      q.options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.innerText = opt.text;
-        btn.className = 'option-btn';
-        btn.onclick = () => selectOption(btn, opt.correct);
-        optionsContainer.appendChild(btn);
-      });
+<script>
+  let userName = "Amigo(a)";
+  let currentIdx = 0;
+  let score = 0;
+
+  // Rostos em SVG (Neutro, Sorridente e Triste)
+  const faces = {
+    neutral: `<svg viewBox="0 0 24 24">
+      <circle cx="8.5" cy="9.5" r="1.5" fill="#e0f2fe" stroke="none"/>
+      <circle cx="15.5" cy="9.5" r="1.5" fill="#e0f2fe" stroke="none"/>
+      <line x1="8" y1="15" x2="16" y2="15"/>
+    </svg>`,
+    happy: `<svg viewBox="0 0 24 24">
+      <circle cx="8.5" cy="9.5" r="1.5" fill="#bbf7d0" stroke="none"/>
+      <circle cx="15.5" cy="9.5" r="1.5" fill="#bbf7d0" stroke="none"/>
+      <path d="M7 13.5 Q12 18.5 17 13.5"/>
+    </svg>`,
+    sad: `<svg viewBox="0 0 24 24">
+      <circle cx="8.5" cy="9.5" r="1.5" fill="#fecaca" stroke="none"/>
+      <circle cx="15.5" cy="9.5" r="1.5" fill="#fecaca" stroke="none"/>
+      <path d="M7 16.5 Q12 11.5 17 16.5"/>
+    </svg>`
+  };
+
+  function setCortanaEmotion(emotion) {
+    const avatar = document.getElementById("cortana-avatar");
+    avatar.innerHTML = faces[emotion];
+    
+    if (emotion === 'happy') {
+      avatar.style.boxShadow = "0 0 25px #22c55e";
+      avatar.style.borderColor = "#22c55e";
+      avatar.style.background = "radial-gradient(circle, #15803d 0%, #166534 100%)";
+    } else if (emotion === 'sad') {
+      avatar.style.boxShadow = "0 0 25px #ef4444";
+      avatar.style.borderColor = "#ef4444";
+      avatar.style.background = "radial-gradient(circle, #b91c1c 0%, #991b1b 100%)";
+    } else {
+      avatar.style.boxShadow = "0 0 20px #38bdf8";
+      avatar.style.borderColor = "#38bdf8";
+      avatar.style.background = "radial-gradient(circle, #0284c7 0%, #0369a1 100%)";
     }
+  }
 
-    function selectOption(btn, isCorrect) {
-      const buttons = document.querySelectorAll('.option-btn');
-      buttons.forEach(b => b.disabled = true);
-
-      const feedback = document.getElementById('feedback');
-      feedback.style.display = 'block';
-
-      if (isCorrect) {
-        feedback.innerText = 'Resposta Correta! Excelente prática de segurança.';
-        feedback.className = 'feedback correct';
-        score++;
-      } else {
-        feedback.innerText = 'Resposta Incorreta! Cuidado com esse tipo de situação.';
-        feedback.className = 'feedback incorrect';
-      }
-
-      document.getElementById('next-btn').style.display = 'inline-block';
+  const questions = [
+    {
+      q: "Um suposto parente envia mensagem no WhatsApp de um número novo dizendo que mudou de telefone e precisa de um Pix urgente. O que você faz?",
+      options: [
+        { text: "Faz o Pix rapidamente para ajudar no imprevisto.", correct: false },
+        { text: "Liga para o número antigo do parente ou fala com outro familiar para confirmar.", correct: true },
+        { text: "Envia fotos dos seus documentos para o número novo.", correct: false }
+      ],
+      explanation: "Golpistas usam fotos de parentes para criar urgência. Sempre confirme ligando para o número antigo antes de transferir qualquer valor!"
+    },
+    {
+      q: "Você recebe um SMS dizendo que suas milhas do cartão vão expirar hoje e traz um link para resgate. Como agir?",
+      options: [
+        { text: "Ignora o SMS e não clica no link. Em dúvida, usa o app oficial do banco.", correct: true },
+        { text: "Clica no link imediatamente para não perder o benefício.", correct: false },
+        { text: "Responde ao SMS informando a sua senha do cartão.", correct: false }
+      ],
+      explanation: "Bancos não enviam links de atualização cadastral por SMS. Isso é Phishing!"
+    },
+    {
+      q: "Uma ligação diz ser da 'central de segurança do banco' alertando sobre uma compra suspeita e pede para você confirmar sua senha. Qual a atitude correta?",
+      options: [
+        { text: "Passar a senha para cancelar a compra urgente.", correct: false },
+        { text: "Desligar a chamada e ligar para o número oficial do verso do seu cartão.", correct: true },
+        { text: "Baixar o aplicativo recomendado pelo atendente no telefone.", correct: false }
+      ],
+      explanation: "Nenhum banco liga pedindo senhas ou solicitação de instalação de aplicativos de acesso remoto."
+    },
+    {
+      q: "Chega uma mensagem informando que uma encomenda sua está retida e exige pagamento de taxa via link. Como proceder?",
+      options: [
+        { text: "Clicar no link para pagar a taxa com cartão de crédito.", correct: false },
+        { text: "Ignorar o link e conferir o rastreio diretamente no site oficial dos Correios.", correct: true },
+        { text: "Enviar fotos de seus documentos pessoais.", correct: false }
+      ],
+      explanation: "O golpe da falsa entrega é muito comum. Acompanhe suas compras sempre nos sites oficiais!"
+    },
+    {
+      q: "Você encontra um anúncio de uma TV de última geração com 85% de desconto por um preço extremamente baixo. O que fazer?",
+      options: [
+        { text: "Comprar imediatamente antes que o estoque acabe.", correct: false },
+        { text: "Desconfiar do preço, pesquisar a loja no Reclame Aqui e conferir a segurança do site.", correct: true },
+        { text: "Enviar os dados do cartão de crédito pelo WhatsApp do vendedor.", correct: false }
+      ],
+      explanation: "Ofertas com descontos absurdos em sites desconhecidos costumam ser armadilhas para roubar dados bancários."
     }
+  ];
 
-    function nextQuestion() {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < questions.length) {
-        loadQuestion();
-      } else {
-        showResults();
-      }
+  function startQuiz() {
+    const input = document.getElementById("username").value.trim();
+    if (input !== "") {
+      userName = input;
     }
-
-    function showResults() {
-      document.getElementById('quiz-box').style.display = 'none';
-      const scoreBox = document.getElementById('score-box');
-      scoreBox.style.display = 'block';
-      document.getElementById('score-text').innerText = `Você acertou ${score} de ${questions.length} perguntas!`;
-    }
-
-    function restartQuiz() {
-      currentQuestionIndex = 0;
-      score = 0;
-      document.getElementById('quiz-box').style.display = 'block';
-      document.getElementById('score-box').style.display = 'none';
-      loadQuestion();
-    }
-
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
     loadQuestion();
-  </script>
+  }
+
+  function loadQuestion() {
+    setCortanaEmotion("neutral");
+    const qData = questions[currentIdx];
+    document.getElementById("question").innerText = `${userName}, ` + qData.q;
+    document.getElementById("progress").style.width = ((currentIdx / questions.length) * 100) + "%";
+    
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+    document.getElementById("feedback").style.display = "none";
+    document.getElementById("next-btn").style.display = "none";
+
+    qData.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerText = opt.text;
+      btn.onclick = () => selectOption(opt, qData.explanation);
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function selectOption(selectedOpt, explanation) {
+    const feedbackDiv = document.getElementById("feedback");
+    const buttons = document.querySelectorAll(".option-btn");
+    buttons.forEach(b => b.disabled = true);
+
+    if (selectedOpt.correct) {
+      score++;
+      setCortanaEmotion("happy");
+      feedbackDiv.className = "feedback correct";
+      feedbackDiv.innerHTML = `<strong>Mandou muito bem, ${userName}!</strong><br>${explanation}`;
+    } else {
+      setCortanaEmotion("sad");
+      feedbackDiv.className = "feedback incorrect";
+      feedbackDiv.innerHTML = `<strong>Atenção, ${userName}! Devemos ter mais cuidado com essa situação.</strong><br>${explanation}`;
+    }
+
+    feedbackDiv.style.display = "block";
+    document.getElementById("next-btn").style.display = "block";
+  }
+
+  function nextQuestion() {
+    currentIdx++;
+    if (currentIdx < questions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById("quiz-container").style.display = "none";
+    const resultBox = document.getElementById("result-box");
+    resultBox.style.display = "block";
+    
+    if (score >= 4) {
+      setCortanaEmotion("happy");
+      document.getElementById("score-text").innerText = `Excelente resultado, ${userName}! Você acertou ${score} de ${questions.length} questões. Suas habilidades de proteção digital estão afiadas!`;
+    } else {
+      setCortanaEmotion("sad");
+      document.getElementById("score-text").innerText = `Treinamento finalizado, ${userName}. Você acertou ${score} de ${questions.length} questões. Recomendo prestar mais atenção e estudar mais sobre os tipos de golpes!`;
+    }
+  }
+
+  function restartQuiz() {
+    currentIdx = 0;
+    score = 0;
+    document.getElementById("result-box").style.display = "none";
+    document.getElementById("quiz-container").style.display = "block";
+    loadQuestion();
+  }
+</script>
+
 </body>
 </html>
